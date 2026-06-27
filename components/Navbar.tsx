@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart, User as UserIcon, LogOut, Smartphone, Menu, X, ClipboardList } from "lucide-react";
+import { ShoppingCart, LogOut, Smartphone, Menu, X, Sparkles } from "lucide-react";
 import { useAuthStore, useCartStore } from "@/lib/stores";
 import { useToastStore } from "./Toast";
 
@@ -20,39 +20,41 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await logout();
-    addToast("Logged out successfully", "info");
+    addToast("Kijelentkezve sikeresen", "info");
     setMobileMenuOpen(false);
   };
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Catalog", href: "/catalog" },
-    ...(user ? [{ name: "My Orders", href: "/orders" }] : []),
+    { name: "Főoldal", href: "/" },
+    { name: "Katalógus", href: "/catalog" },
+    ...(user ? [{ name: "Rendeléseim", href: "/orders" }] : []),
   ];
 
   const cartCount = getCartCount();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl tracking-tight text-primary">
-          <div className="bg-primary/10 p-1.5 rounded-lg text-primary">
-            <Smartphone className="w-6 h-6" />
+        <Link href="/" className="flex items-center gap-2 font-black text-xl tracking-tighter text-primary hover:opacity-90 transition-opacity">
+          <div className="bg-primary/10 p-2 rounded-xl text-primary border border-primary/20">
+            <Smartphone className="w-5 h-5" />
           </div>
-          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Phonix</span>
+          <span className="bg-gradient-to-r from-primary via-indigo-500 to-accent bg-clip-text text-transparent font-black">
+            Phonix
+          </span>
         </Link>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive ? "text-primary border-b-2 border-primary py-1" : "text-muted-foreground"
+                className={`text-xs font-extrabold uppercase tracking-wider transition-all hover:text-primary ${
+                  isActive ? "text-primary border-b-2 border-primary pb-1" : "text-muted-foreground"
                 }`}
               >
                 {link.name}
@@ -66,55 +68,55 @@ export default function Navbar() {
           {/* Cart Icon */}
           <Link
             href="/cart"
-            className="relative p-2 text-muted-foreground hover:text-primary transition-colors"
+            className="relative p-2.5 text-muted-foreground hover:text-primary transition-all hover:scale-105 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border"
             aria-label="Shopping Cart"
           >
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingCart className="w-4.5 h-4.5" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center border-2 border-background">
+              <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center border-2 border-background animate-bounce">
                 {cartCount}
               </span>
             )}
           </Link>
 
-          <span className="h-4 w-[1px] bg-border" />
+          <span className="h-4 w-[1px] bg-border/60" />
 
           {/* User Section */}
           {initialized ? (
             user ? (
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border">
+                <div className="flex items-center gap-2 text-xs font-extrabold text-foreground bg-muted/35 border px-3 py-1.5 rounded-xl">
+                  <div className="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-black border">
                     {user.name.charAt(0).toUpperCase()}
                   </div>
-                  <span className="max-w-[120px] truncate">Hi, {user.name.split(" ")[0]}</span>
+                  <span className="max-w-[120px] truncate">Szia, {user.name.split(" ")[0]}</span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md border border-border text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                  className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border border-red-200/40 text-red-500 hover:bg-red-500/5 transition-all"
                 >
                   <LogOut className="w-3.5 h-3.5" />
-                  Logout
+                  Kilépés
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="text-sm font-medium px-4 py-2 rounded-md hover:bg-muted transition-colors"
+                  className="text-xs font-extrabold uppercase tracking-wider px-4 py-2.5 rounded-xl hover:bg-muted transition-all"
                 >
-                  Sign In
+                  Belépés
                 </Link>
                 <Link
                   href="/register"
-                  className="text-sm font-medium bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors shadow-sm"
+                  className="text-xs font-extrabold uppercase tracking-wider bg-primary text-primary-foreground px-4.5 py-2.5 rounded-xl hover:bg-primary/95 transition-all shadow-md shadow-primary/10 hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  Sign Up
+                  Regisztráció
                 </Link>
               </div>
             )
           ) : (
-            <div className="w-24 h-8 animate-pulse bg-muted rounded" />
+            <div className="w-24 h-8 animate-pulse bg-muted rounded-xl" />
           )}
         </div>
 
@@ -156,7 +158,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-base font-semibold px-2 py-1.5 rounded-md transition-colors ${
+                  className={`text-sm font-extrabold px-3 py-2.5 rounded-xl transition-all ${
                     isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
                   }`}
                 >
@@ -177,16 +179,16 @@ export default function Navbar() {
                     {user.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold">{user.name}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="text-sm font-bold">{user.name}</p>
+                    <p className="text-xs text-muted-foreground font-semibold">{user.email}</p>
                   </div>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center justify-center gap-2 text-sm font-semibold py-2 rounded-md border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 text-sm font-extrabold py-2.5 rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
-                  Logout
+                  Kijelentkezés
                 </button>
               </div>
             ) : (
@@ -194,21 +196,21 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 rounded-md border border-border text-sm font-semibold hover:bg-muted transition-colors"
+                  className="w-full text-center py-3 rounded-xl border border-border text-xs font-extrabold uppercase tracking-wider hover:bg-muted transition-colors"
                 >
-                  Sign In
+                  Belépés
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center py-2.5 rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                  className="w-full text-center py-3 rounded-xl bg-primary text-primary-foreground text-xs font-extrabold uppercase tracking-wider hover:bg-primary/90 transition-colors"
                 >
-                  Sign Up
+                  Regisztráció
                 </Link>
               </div>
             )
           ) : (
-            <div className="h-10 w-full animate-pulse bg-muted rounded" />
+            <div className="h-10 w-full animate-pulse bg-muted rounded-xl" />
           )}
         </div>
       )}
